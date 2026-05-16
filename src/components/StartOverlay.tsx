@@ -27,8 +27,8 @@ export function StartOverlay() {
   return (
     <div className="overlay">
       <div className="overlay-card">
-        <h1 className="glitch" data-text="NEON">
-          NEON
+        <h1 className="glitch" data-text="FIESTA INFINITA">
+          FIESTA INFINITA
         </h1>
         <p className="subtitle">Audio-Reactive · Psychedelic · VJ Engine</p>
 

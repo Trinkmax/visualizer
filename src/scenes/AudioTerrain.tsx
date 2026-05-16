@@ -5,8 +5,12 @@ import { audioEngine } from '../audio/AudioEngine';
 import { useStore } from '../state/store';
 import { paletteColors } from '../lib/palette';
 
-/** "Audio Terrain" — a neon wireframe landscape sculpted from the spectrum,
- *  scrolling endlessly toward the camera. */
+/**
+ * "Audio Terrain" — a neon wireframe landscape sculpted from the spectrum,
+ * scrolling endlessly toward the camera, mirrored above into a tunnel/cave of
+ * light you fly through. Scroll is locked to the song tempo; the kick slams a
+ * ridge across the row and the camera bobs on the beat phase.
+ */
 
 const COLS = 96; // along X (spectrum, mirrored)
 const ROWS = 120; // along Z (scrolling history)
@@ -64,7 +68,7 @@ export function AudioTerrain() {
     pos.needsUpdate = true;
     geometry.computeBoundingSphere();
 
-    // fly low over the landscape — bob on the tempo phase, dive on the kick
+    // fly low through the cave — bob on the tempo phase, dive on the kick
     const bob = Math.sin(b.beatPhase * Math.PI * 2);
     state.camera.position.set(
       Math.sin(t * 0.2) * 3,
@@ -90,7 +94,7 @@ export function AudioTerrain() {
           depthWrite={false}
         />
       </mesh>
-      {/* mirrored ceiling for a tunnel-of-light feel */}
+      {/* mirrored ceiling for a tunnel-of-light / cave feel */}
       <mesh geometry={geometry} position={[0, 16, -10]} scale={[1, -1, 1]}>
         <meshBasicMaterial
           color={colors[1]}

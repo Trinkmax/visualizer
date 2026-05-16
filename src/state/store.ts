@@ -65,23 +65,89 @@ type State = {
   prevScene: () => void;
   toggleUI: () => void;
   patch: (p: Partial<Settings>) => void;
+  reset: () => void;
+};
+
+/** Friendly Spanish labels + descriptions for the scene picker. */
+export const SCENE_INFO: Record<SceneName, { label: string; desc: string }> = {
+  'Alien Rave': { label: 'Rave Alien', desc: 'Multitud de aliens neón bailando al ritmo' },
+  'Hyper Tunnel': { label: 'Túnel Hiper', desc: 'Vuelo infinito por anillos de luz' },
+  'Particle Nebula': { label: 'Nebulosa', desc: 'Galaxia de partículas que respira' },
+  'Kaleido Fractal': { label: 'Caleidoscopio', desc: 'Fractal psicodélico que late' },
+  'Audio Terrain': { label: 'Paisaje', desc: 'Montañas neón esculpidas por la música' },
+};
+
+/** One-click vibes. Each applies a bundle of settings over the current ones. */
+export const PRESETS: Record<string, Partial<Settings>> = {
+  Suave: {
+    reactivity: 0.75,
+    bassPunch: 0.6,
+    bloom: 1.0,
+    bloomThreshold: 0.22,
+    chroma: 0.0006,
+    grain: 0.03,
+    trails: 0.2,
+    rotation: 0.15,
+    hueCycle: 3,
+    flash: 0,
+    glitch: 0,
+  },
+  Equilibrado: {
+    reactivity: 1.1,
+    bassPunch: 1.1,
+    bloom: 1.3,
+    bloomThreshold: 0.12,
+    chroma: 0.001,
+    grain: 0.05,
+    trails: 0.35,
+    rotation: 0.22,
+    hueCycle: 5,
+    flash: 0,
+    glitch: 0,
+  },
+  Fiesta: {
+    reactivity: 1.6,
+    bassPunch: 1.7,
+    bloom: 1.9,
+    bloomThreshold: 0.05,
+    chroma: 0.002,
+    grain: 0.07,
+    trails: 0.45,
+    rotation: 0.45,
+    hueCycle: 12,
+    flash: 0.25,
+    glitch: 0.15,
+  },
+  'Viaje total': {
+    reactivity: 2.2,
+    bassPunch: 2.2,
+    bloom: 2.5,
+    bloomThreshold: 0.0,
+    chroma: 0.003,
+    grain: 0.1,
+    trails: 0.6,
+    rotation: 0.8,
+    hueCycle: 22,
+    flash: 0.4,
+    glitch: 0.3,
+  },
 };
 
 export const defaultSettings: Settings = {
   palette: 'Alien Green',
-  hueCycle: 6,
-  bloom: 1.6,
-  bloomThreshold: 0.0,
-  chroma: 0.0016,
-  vignette: 0.5,
-  grain: 0.06,
-  trails: 0.4,
-  flash: 0.35,
-  glitch: 0.18,
+  hueCycle: 5,
+  bloom: 1.3,
+  bloomThreshold: 0.12,
+  chroma: 0.001,
+  vignette: 0.45,
+  grain: 0.05,
+  trails: 0.35,
+  flash: 0, // strobe OFF by default (opt-in via "Modo fiesta")
+  glitch: 0,
 
-  reactivity: 1,
-  bassPunch: 1,
-  rotation: 0.25,
+  reactivity: 1.1,
+  bassPunch: 1.1,
+  rotation: 0.22,
 
   nebulaParticles: 28000,
 
@@ -107,4 +173,5 @@ export const useStore = create<State>((set) => ({
     set((s) => ({ sceneIndex: (s.sceneIndex - 1 + SCENES.length) % SCENES.length })),
   toggleUI: () => set((s) => ({ uiHidden: !s.uiHidden })),
   patch: (p) => set((s) => ({ settings: { ...s.settings, ...p } })),
+  reset: () => set({ settings: defaultSettings }),
 }));

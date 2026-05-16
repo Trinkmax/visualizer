@@ -71,7 +71,7 @@ function Effects() {
         (Math.PI * 2);
     }
     if (vignette.current) {
-      vignette.current.darkness = s.vignette + b.kickLevel * 0.22;
+      vignette.current.darkness = s.vignette + b.kickLevel * 0.06;
     }
     // strobe / flash pop on the beat (the "alucinar" hit)
     const bc = bright.current?.uniforms?.get?.('brightness');
