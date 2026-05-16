@@ -85,6 +85,15 @@ export function StartOverlay() {
               {busy === 'list' ? 'Pidiendo permiso…' : 'Elegir dispositivo de audio'}
             </button>
           ) : (
+            <>
+            {!devices.some((d) => LOOPBACK_RE.test(d.label)) && (
+              <div className="warn">
+                ⚠️ No hay un dispositivo de captura del sistema. Tu{' '}
+                <b>parlante / auxiliar es una salida</b>, no aparece acá (esta
+                lista es de <b>entradas</b>). Instalá <b>BlackHole</b> para que
+                aparezca — mirá la guía 👇
+              </div>
+            )}
             <div className="field">
               <select
                 value={deviceId}
@@ -104,6 +113,7 @@ export function StartOverlay() {
                 {busy === 'device' ? 'Iniciando…' : '▸ Empezar'}
               </button>
             </div>
+            </>
           )}
           <button className="link" onClick={() => setShowHelp((v) => !v)}>
             {showHelp ? '▾' : '▸'} ¿Cómo capturar el audio del sistema en Mac?
@@ -128,9 +138,11 @@ export function StartOverlay() {
                 <li>
                   Abrí <b>Configuración de Audio MIDI</b> → ＋ →{' '}
                   <b>Crear dispositivo de salida múltiple</b>. Tildá{' '}
-                  <b>tu salida Bluetooth</b> (para seguir escuchando) y{' '}
-                  <b>BlackHole 2ch</b>. Poné el Bluetooth como dispositivo
-                  maestro y activá <b>corrección de deriva</b> en BlackHole.
+                  <b>tu parlante</b> — el del auxiliar suele llamarse{' '}
+                  <b>“Auriculares externos”</b> (o tu Bluetooth) — para seguir
+                  escuchando, y también <b>BlackHole 2ch</b>. Poné tu parlante
+                  como dispositivo maestro y activá{' '}
+                  <b>corrección de deriva</b> en BlackHole.
                 </li>
                 <li>
                   En la barra de menú / Sonido, elegí ese{' '}
