@@ -187,6 +187,94 @@ canvas {
   letter-spacing: 0.04em;
 }
 
+/* ---- source picker on the start screen ---- */
+.src {
+  margin: 30px auto 18px;
+  max-width: 460px;
+  text-align: left;
+  border: 1px solid rgba(57, 255, 136, 0.22);
+  border-radius: 14px;
+  padding: 18px;
+  background: rgba(57, 255, 136, 0.04);
+}
+.src-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #eafff3;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.field {
+  display: flex;
+  gap: 10px;
+}
+.field select {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 13px;
+  color: #eafff3;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(57, 255, 136, 0.35);
+  border-radius: 999px;
+  padding: 0 16px;
+  cursor: pointer;
+  appearance: none;
+}
+.field select option {
+  background: #07120d;
+  color: #eafff3;
+}
+.field .btn {
+  padding: 14px 22px;
+  white-space: nowrap;
+}
+.link {
+  display: inline-block;
+  margin-top: 14px;
+  background: none;
+  border: none;
+  color: rgba(57, 255, 136, 0.8);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.link:hover {
+  color: var(--neon);
+}
+.helpbox {
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: rgba(234, 255, 243, 0.6);
+}
+.helpbox ol {
+  margin: 10px 0 10px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.helpbox b {
+  color: rgba(234, 255, 243, 0.92);
+}
+.helpbox code {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+}
+.helpbox a {
+  color: var(--neon);
+}
+.helpbox .muted {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: rgba(234, 255, 243, 0.4);
+}
+
 /* ---------- HUD ---------- */
 .hud {
   position: fixed;

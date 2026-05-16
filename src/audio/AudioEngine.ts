@@ -129,7 +129,7 @@ export class AudioEngine {
     time: 0,
   };
 
-  async start(source: AudioSource): Promise<void> {
+  async start(source: AudioSource, deviceId?: string): Promise<void> {
     await this.stop();
 
     const Ctx =
@@ -157,13 +157,14 @@ export class AudioEngine {
         );
       }
     } else {
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
-        },
-      });
+      // mic OR a virtual loopback device (e.g. BlackHole) selected by id
+      const audio: MediaTrackConstraints = {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
+      };
+      if (deviceId) audio.deviceId = { exact: deviceId };
+      stream = await navigator.mediaDevices.getUserMedia({ audio });
     }
 
     this.stream = stream;
@@ -385,3 +386,23 @@ export class AudioEngine {
 }
 
 export const audioEngine = new AudioEngine();
+
+export type AudioInput = { deviceId: string; label: string };
+
+/**
+ * Lists audio input devices. Device labels are only exposed by the browser
+ * after microphone permission is granted, so we request it first (and stop the
+ * probe stream immediately). Use this to let the user pick a virtual loopback
+ * device (BlackHole / Loopback / VB-Cable) that carries the system output.
+ */
+export async function listAudioInputs(): Promise<AudioInput[]> {
+  const probe = await navigator.mediaDevices.getUserMedia({ audio: true });
+  probe.getTracks().forEach((t) => t.stop());
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  return devices
+    .filter((d) => d.kind === 'audioinput')
+    .map((d, i) => ({
+      deviceId: d.deviceId,
+      label: d.label || `Entrada de audio ${i + 1}`,
+    }));
+}

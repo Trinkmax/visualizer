@@ -1,11 +1,30 @@
 import { useState } from 'react';
-import { audioEngine, type AudioSource } from '../audio/AudioEngine';
+import {
+  audioEngine,
+  listAudioInputs,
+  type AudioInput,
+  type AudioSource,
+} from '../audio/AudioEngine';
 import { useStore } from '../state/store';
+
+const LOOPBACK_RE = /blackhole|loopback|aggregate|multi|vb-?audio|vb-?cable|soundflower|stereo mix|mezcla est/i;
 
 export function StartOverlay() {
   const setStarted = useStore((s) => s.setStarted);
-  const [busy, setBusy] = useState<AudioSource | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [devices, setDevices] = useState<AudioInput[] | null>(null);
+  const [deviceId, setDeviceId] = useState('');
+  const [showHelp, setShowHelp] = useState(false);
+
+  function fail(e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    setError(
+      /denied|dismissed|NotAllowed|Permission/i.test(msg)
+        ? 'Permiso de audio denegado. Probá de nuevo y aceptá el acceso.'
+        : msg,
+    );
+  }
 
   async function begin(source: AudioSource) {
     setError(null);
@@ -15,12 +34,34 @@ export function StartOverlay() {
       setStarted(true, source);
     } catch (e) {
       setBusy(null);
-      const msg = e instanceof Error ? e.message : String(e);
-      setError(
-        /denied|dismissed|NotAllowed/i.test(msg)
-          ? 'Permiso denegado. Probá de nuevo y aceptá el acceso al audio.'
-          : msg,
-      );
+      fail(e);
+    }
+  }
+
+  async function loadDevices() {
+    setError(null);
+    setBusy('list');
+    try {
+      const list = await listAudioInputs();
+      setDevices(list);
+      const pref = list.find((d) => LOOPBACK_RE.test(d.label)) ?? list[0];
+      setDeviceId(pref?.deviceId ?? '');
+    } catch (e) {
+      fail(e);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function beginDevice() {
+    setError(null);
+    setBusy('device');
+    try {
+      await audioEngine.start('mic', deviceId || undefined);
+      setStarted(true, 'mic');
+    } catch (e) {
+      setBusy(null);
+      fail(e);
     }
   }
 
@@ -32,13 +73,91 @@ export function StartOverlay() {
         </h1>
         <p className="subtitle">Audio-Reactive · Psychedelic · VJ Engine</p>
 
+        {/* ---- system output (Bluetooth / Spotify / apps) ---- */}
+        <div className="src">
+          <div className="src-title">🔊 Salida del sistema (Spotify, Bluetooth, apps)</div>
+          {devices === null ? (
+            <button
+              className="btn primary"
+              disabled={busy !== null}
+              onClick={loadDevices}
+            >
+              {busy === 'list' ? 'Pidiendo permiso…' : 'Elegir dispositivo de audio'}
+            </button>
+          ) : (
+            <div className="field">
+              <select
+                value={deviceId}
+                onChange={(e) => setDeviceId(e.target.value)}
+              >
+                {devices.map((d) => (
+                  <option key={d.deviceId} value={d.deviceId}>
+                    {d.label}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="btn primary"
+                disabled={busy !== null}
+                onClick={beginDevice}
+              >
+                {busy === 'device' ? 'Iniciando…' : '▸ Empezar'}
+              </button>
+            </div>
+          )}
+          <button className="link" onClick={() => setShowHelp((v) => !v)}>
+            {showHelp ? '▾' : '▸'} ¿Cómo capturar el audio del sistema en Mac?
+          </button>
+          {showHelp && (
+            <div className="helpbox">
+              El navegador <b>no puede</b> tomar el audio del sistema en macOS
+              directamente. Necesitás un “cable” de audio virtual (gratis):
+              <ol>
+                <li>
+                  Instalá <b>BlackHole 2ch</b>:{' '}
+                  <code>brew install blackhole-2ch</code> o desde{' '}
+                  <a
+                    href="https://existential.audio/blackhole/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    existential.audio/blackhole
+                  </a>
+                  .
+                </li>
+                <li>
+                  Abrí <b>Configuración de Audio MIDI</b> → ＋ →{' '}
+                  <b>Crear dispositivo de salida múltiple</b>. Tildá{' '}
+                  <b>tu salida Bluetooth</b> (para seguir escuchando) y{' '}
+                  <b>BlackHole 2ch</b>. Poné el Bluetooth como dispositivo
+                  maestro y activá <b>corrección de deriva</b> en BlackHole.
+                </li>
+                <li>
+                  En la barra de menú / Sonido, elegí ese{' '}
+                  <b>Dispositivo de salida múltiple</b> como salida del Mac.
+                </li>
+                <li>
+                  Acá arriba elegí <b>BlackHole 2ch</b> en la lista y{' '}
+                  <b>Empezar</b>. ¡Listo, reacciona a todo lo que suene en la
+                  PC!
+                </li>
+              </ol>
+              <span className="muted">
+                Windows: activá “Mezcla estéreo” o usá VB-Audio Cable y
+                elegilo en la lista.
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* ---- other sources ---- */}
         <div className="cta-row">
           <button
-            className="btn primary"
+            className="btn"
             disabled={busy !== null}
             onClick={() => begin('system')}
           >
-            {busy === 'system' ? 'Esperando…' : '▸ Audio de la compu'}
+            {busy === 'system' ? 'Esperando…' : 'Pestaña del navegador'}
           </button>
           <button
             className="btn"
@@ -52,11 +171,6 @@ export function StartOverlay() {
         {error && <p className="error">{error}</p>}
 
         <p className="hint">
-          <b>Audio de la compu:</b> elegí la pestaña/pantalla que reproduce
-          música y <b>activá “Compartir audio”</b> en el selector del navegador
-          (funciona mejor en Chrome / Edge).
-          <br />
-          <br />
           <kbd>1–5</kbd> escenas · <kbd>Espacio</kbd> siguiente ·{' '}
           <kbd>H</kbd> ocultar UI · <kbd>F</kbd> pantalla completa ·{' '}
           <kbd>R</kbd> paleta random
