@@ -54,7 +54,7 @@ export function Hud() {
 
       <div className="hud-bottom">
         <div className="hud-keys">
-          <b>1–5</b> scenes &nbsp; <b>SPACE</b> next &nbsp; <b>R</b> palette
+          <b>1–0</b> scenes &nbsp; <b>SPACE</b> next &nbsp; <b>R</b> palette
           <br />
           <b>H</b> hide ui &nbsp; <b>F</b> fullscreen &nbsp; <b>C</b> auto-cycle
         </div>

@@ -7,6 +7,11 @@ export const SCENES = [
   'Particle Nebula',
   'Kaleido Fractal',
   'Audio Terrain',
+  'Neon City',
+  'Audio Sphere',
+  'Hyperdrive',
+  'Plasma Flow',
+  'Radial EQ',
 ] as const;
 
 export type SceneName = (typeof SCENES)[number];
@@ -74,7 +79,12 @@ export const SCENE_INFO: Record<SceneName, { label: string; desc: string }> = {
   'Hyper Tunnel': { label: 'Túnel Hiper', desc: 'Vuelo infinito por anillos de luz' },
   'Particle Nebula': { label: 'Nebulosa', desc: 'Galaxia de partículas que respira' },
   'Kaleido Fractal': { label: 'Caleidoscopio', desc: 'Fractal psicodélico que late' },
-  'Audio Terrain': { label: 'Paisaje', desc: 'Montañas neón esculpidas por la música' },
+  'Audio Terrain': { label: 'Cueva', desc: 'Túnel de malla neón que late con la música' },
+  'Neon City': { label: 'Ciudad Neón', desc: 'Synthwave: grilla infinita, sol y edificios' },
+  'Audio Sphere': { label: 'Esfera', desc: 'Icoesfera que respira y revienta con el kick' },
+  'Hyperdrive': { label: 'Hiperdrive', desc: 'Salto a la velocidad de la luz' },
+  'Plasma Flow': { label: 'Plasma', desc: 'Lava psicodélica líquida que fluye al tempo' },
+  'Radial EQ': { label: 'Ecualizador', desc: 'Analizador circular de espectro + onda' },
 };
 
 /** One-click vibes. Each applies a bundle of settings over the current ones. */

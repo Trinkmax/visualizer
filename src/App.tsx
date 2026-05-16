@@ -24,6 +24,8 @@ export function App() {
 
       if (e.key >= '1' && e.key <= '9') {
         st().setScene(Number(e.key) - 1);
+      } else if (e.key === '0') {
+        st().setScene(9); // 10th scene
       } else if (e.code === 'Space' || e.key === 'ArrowRight') {
         e.preventDefault();
         st().nextScene();

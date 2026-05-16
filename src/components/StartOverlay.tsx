@@ -236,7 +236,7 @@ export function StartOverlay() {
         {error && <p className="error">{error}</p>}
 
         <p className="hint">
-          <kbd>1–5</kbd> escenas · <kbd>Espacio</kbd> siguiente ·{' '}
+          <kbd>1–0</kbd> escenas · <kbd>Espacio</kbd> siguiente ·{' '}
           <kbd>H</kbd> ocultar UI · <kbd>F</kbd> pantalla completa ·{' '}
           <kbd>R</kbd> paleta random
         </p>

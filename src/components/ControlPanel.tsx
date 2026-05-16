@@ -380,7 +380,7 @@ export function ControlPanel() {
           </button>
         </div>
         <p className="kbd-hint">
-          Atajos: <b>1–5</b> escenas · <b>Espacio</b> siguiente · <b>H</b>{' '}
+          Atajos: <b>1–0</b> escenas · <b>Espacio</b> siguiente · <b>H</b>{' '}
           ocultar todo · <b>F</b> pantalla completa
         </p>
       </div>
